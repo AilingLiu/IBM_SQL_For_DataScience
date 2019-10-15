@@ -1,0 +1,99 @@
+CREATE TABLE JOB_HISTORY(
+	EMPL_ID CHAR(5) NOT NULL,
+	START_DATE DATE NOT NULL,
+	JOBS_ID CHAR(3) NOT NULL,
+	DEPT_ID CHAR(1) NOT NULL
+);
+
+CREATE TABLE JOBS (
+	JOB_IDENT CHAR(3),
+	JOB_TITLE VARCHAR(50),
+	MIN_SALARY SMALLINT,
+	MAX_SALARY SMALLINT	
+);
+
+CREATE TABLE DEPARTMENTS (
+	DEPT_ID_DEP CHAR(1) NOT NULL,
+	DEP_NAME VARCHAR(40) NOT NULL,
+	MANAGER_ID VARCHAR(10) NOT NULL,
+	LOC_ID VARCHAR(10) NOT NULL
+);
+
+
+CREATE TABLE LOCATIONS (
+	LOCT_ID CHAR(5) NOT NULL,
+	DEP_ID_LOC CHAR(1) NOT NULL
+);
+
+
+--EMPLOYEES WHOSE ADDRESS IS IN Elgin, IL
+SELECT * FROM EMPLOYEES
+WHERE ADDRESS LIKE '%Elgin,IL%';
+
+-- all employees who were born during 1970's
+
+select * from EMPLOYEES
+where B_DATE between '1970-1-1' and '1979-12-31';
+
+-- employees in department 5 whose salary is between 60k and 70k
+
+select *
+from EMPLOYEES
+where SALARY between 60000 and 70000
+and DEP_ID = '5';
+
+-- a list of employees ordered by department ID
+
+select * from EMPLOYEES
+order by DEP_ID;
+
+
+-- a list of employees ordered in descending order by department ID and within each department ordered alphabetically in descending order by last name
+
+select * from EMPLOYEES
+order by DEP_ID desc, L_NAME desc;
+
+-- for each department id, retrieve the number of employees in the department
+
+select DEP_ID, COUNT(EMP_ID) as COUNT
+from EMPLOYEES
+group by DEP_ID;
+
+--for each department retrieve the number of employees in the department, and the average salary in the department
+SELECT DEP_ID, COUNT(EMP_ID) AS COUNT, AVG(SALARY) AS AVERAGE_SALARY
+FROM EMPLOYEES
+GROUP BY DEP_ID;
+
+--label the comuted columns in the result set as 'NUM_EMPLOYEES' and 'AVG_SALARY'
+SELECT DEP_ID, COUNT(EMP_ID) AS NUM_EMPLOYEES, AVG(SALARY) AS AVG_SALARY
+FROM EMPLOYEES
+GROUP BY DEP_ID;
+
+--order the result set by Average Salary
+SELECT DEP_ID, COUNT(EMP_ID) AS NUM_EMPLOYEES, AVG(SALARY) AS AVG_SALARY
+FROM EMPLOYEES
+GROUP BY DEP_ID
+ORDER BY 3
+;
+
+-- limit the result to departments with fewer than 4 employees
+SELECT DEP_ID, COUNT(EMP_ID) AS NUM_EMPLOYEES, AVG(SALARY) AS AVG_SALARY
+FROM EMPLOYEES
+GROUP BY DEP_ID
+HAVING COUNT(EMP_ID) < 4
+ORDER BY 3
+;
+
+--bonus: use department name to group, within each department ordered alphabeticlly in descending order by last name
+SELECT *
+FROM EMPLOYEES
+JOIN DEPARTMENTS
+ON EMPLOYEES.DEP_ID = DEPARTMENTS.DEPT_ID_DEP
+ORDER BY DEP_NAME, L_NAME DESC
+;
+
+SELECT *
+FROM EMPLOYEES, DEPARTMENTS
+WHERE EMPLOYEES.DEP_ID = DEPARTMENTS.DEPT_ID_DEP
+ORDER BY DEP_NAME, L_NAME DESC
+;
